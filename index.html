@@ -33,7 +33,7 @@
         .screen {
             display: none;
             width: 100%;
-            max-width: 700px;
+            max-width: 750px;
             padding: 40px;
             background-color: var(--container-bg);
             border: 2px solid var(--border-color);
@@ -52,13 +52,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Background image mode for archive room */
+        /* Fullscreen Archive Background */
         .fullscreen-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
+            background-image: url('images/archive-room.jpg');
             background-size: cover;
             background-position: center;
             display: none;
@@ -71,35 +72,29 @@
             display: flex;
         }
 
-        /* Archive interactive container */
         .archive-container {
             position: relative;
             width: 100%;
             max-width: 900px;
             height: 85vh;
-            background-image: url('images/archive-room.jpg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            margin: auto;
         }
 
-        /* Invisible clickable hot-spots */
+        /* Invisible clickable hot-spots over archive-room.jpg */
         .hotspot {
             position: absolute;
-            background: rgba(255, 215, 0, 0.15);
-            border: 2px dashed rgba(255, 215, 0, 0.6);
+            background: rgba(255, 215, 0, 0.05);
+            border: 2px dashed rgba(255, 215, 0, 0.4);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .hotspot:hover {
-            background: rgba(255, 215, 0, 0.4);
+            background: rgba(255, 215, 0, 0.3);
             border-color: var(--accent-gold);
             box-shadow: 0 0 15px var(--accent-gold);
         }
 
-        /* Adjust coordinates based on your actual archive-room.jpg proportions */
+        /* Adjust coordinates to match your archive-room.jpg items */
         #spot-menu { top: 35%; left: 15%; width: 15%; height: 20%; }
         #spot-travel { top: 60%; left: 40%; width: 18%; height: 22%; }
         #spot-photo { top: 30%; left: 68%; width: 16%; height: 20%; }
@@ -126,7 +121,6 @@
             display: block;
         }
 
-        /* Typography & UI elements */
         h2, h3 {
             color: var(--accent-gold);
             margin-bottom: 20px;
@@ -136,7 +130,7 @@
 
         p {
             line-height: 1.6;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             font-size: 1.05rem;
         }
 
@@ -169,7 +163,7 @@
         }
 
         .option-btn {
-            background: rgba(43, 27, 23, 0.8);
+            background: rgba(43, 27, 23, 0.9);
             border: 1px solid var(--border-color);
             color: var(--text-color);
             padding: 12px;
@@ -183,7 +177,7 @@
         .option-btn:hover {
             border-color: var(--accent-gold);
             color: var(--accent-gold);
-            background: rgba(255, 215, 0, 0.05);
+            background: rgba(255, 215, 0, 0.1);
         }
 
         .modal-overlay {
@@ -204,10 +198,12 @@
             background: var(--container-bg);
             border: 2px solid var(--accent-gold);
             padding: 35px;
-            max-width: 550px;
+            max-width: 600px;
             width: 100%;
             text-align: center;
             position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-content img {
@@ -243,50 +239,33 @@
             outline: none;
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
         }
-
-        .classified-box {
-            background: #150d0b;
-            border: 1px solid var(--accent-gold);
-            padding: 20px;
-            text-align: left;
-            margin: 20px 0;
-            font-size: 0.95rem;
-            line-height: 1.8;
-        }
-
-        .handwritten {
-            font-style: italic;
-            color: var(--accent-gold);
-            margin-top: 15px;
-            text-align: right;
-        }
     </style>
 </head>
 <body>
 
-    <!-- PERSISTENT EVIDENCE TRACKER BAR -->
+    <!-- PERSISTENT EVIDENCE TRACKER -->
     <div id="evidenceTracker" class="evidence-tracker">
         EVIDENCE: <span id="slot1">[ _ ]</span> <span id="slot2">[ _ ]</span> <span id="slot3">[ _ ]</span>
     </div>
 
-    <!-- PART 1 — OPENING SCREEN -->
-    <div id="screen-opening" class="screen active">
-        <h2>CASE 02</h2>
-        <h3>The Morning After</h3>
-        <p>You shouldn't have opened it.</p>
-        <p>But since you did...</p>
-        <p>Start with yourself.</p>
-        <hr style="border-color: var(--border-color); margin: 20px 0;">
-        <p style="color: var(--accent-gold); font-weight: bold;">SUBJECT: JOE</p>
-        <p>We spent the night looking through the records.</p>
-        <p>We found some things.</p>
-        <p>Some are ordinary.</p>
-        <p>Some are... very Joe.</p>
-        <p>And one thing doesn't belong there.</p>
-        <button class="btn" onclick="enterArchive()">ENTER THE ARCHIVE →</button>
+    <!-- PART 1 — OPENING (Using day2-morning.jpg background styling) -->
+    <div id="screen-opening" class="screen active" style="background-image: url('images/day2-morning.jpg'); background-size: cover; background-position: center;">
+        <div style="background: rgba(43, 27, 23, 0.92); padding: 30px; border: 1px solid var(--accent-gold);">
+            <h2>CASE 02</h2>
+            <h3>The Morning After</h3>
+            <p>You shouldn't have opened it.</p>
+            <p>But since you did...</p>
+            <p>Start with yourself.</p>
+            <hr style="border-color: var(--border-color); margin: 20px 0;">
+            <p style="color: var(--accent-gold); font-weight: bold;">SUBJECT: JOE</p>
+            <p>We spent the night looking through the records.</p>
+            <p>We found some things. Some are ordinary. Some are... very Joe.</p>
+            <p>And one thing doesn't belong there.</p>
+            <button class="btn" onclick="enterArchive()">ENTER THE ARCHIVE →</button>
+        </div>
     </div>
 
-    <!-- PART 2 — ARCHIVE ROOM (Fullscreen Interactive Background) -->
+    <!-- PART 2 — ARCHIVE ROOM -->
     <div id="screen-archive" class="fullscreen-bg">
         <div class="archive-container">
             <div id="spot-menu" class="hotspot" onclick="openMenu()" title="Menu"></div>
@@ -296,11 +275,9 @@
         </div>
     </div>
 
-    <!-- GENERIC MODAL CONTAINER FOR POPUPS -->
+    <!-- MODAL CONTAINER -->
     <div id="modalOverlay" class="modal-overlay">
-        <div id="modalContentBox" class="modal-content">
-            <!-- Dynamic modal content inserted via JS -->
-        </div>
+        <div id="modalContentBox" class="modal-content"></div>
     </div>
 
     <!-- PART 8 — LOCKED DRAWER SCREEN -->
@@ -319,56 +296,42 @@
         <p id="drawerFeedback" style="color: #ff6b6b; min-height: 25px;"></p>
     </div>
 
-    <!-- PART 9 & 10 — ARSULUM & CLASSIFIED FILE -->
+    <!-- PART 9 — ARSULUM QUESTION -->
     <div id="screen-arsulum" class="screen">
+        <img src="images/arsulum-question.jpg" alt="Arsulum Question" style="max-width: 100%; margin-bottom: 15px; border: 1px solid var(--border-color);">
         <h2>ARSULUM</h2>
-        <p style="font-size: 1.2rem; color: var(--accent-gold); letter-spacing: 3px;">ARSU &nbsp;+&nbsp; L U M</p>
-        <hr style="border-color: var(--border-color); margin: 20px 0;">
-        <p>ARSULUM</p>
-        <p>You've seen this word before.</p>
-        <p>You just didn't know it was important.</p>
-        <p>Now you do.</p>
-        <p>But there's still one problem.</p>
+        <p style="font-size: 1.1rem; color: var(--accent-gold); letter-spacing: 3px;">ARSU &nbsp;+&nbsp; L U M</p>
+        <p>You've seen this word before. You just didn't know it was important. Now you do.</p>
         <p style="color: var(--accent-gold);">What is Arsulum?</p>
         
         <div class="options-grid">
-            <div class="option-btn" onclick="selectArsulumChoice('A PERSON')">A PERSON</div>
-            <div class="option-btn" onclick="selectArsulumChoice('A PLACE')">A PLACE</div>
-            <div class="option-btn" onclick="selectArsulumChoice('A CODE')">A CODE</div>
-            <div class="option-btn" onclick="selectArsulumChoice('SOMETHING ELSE')">SOMETHING ELSE</div>
+            <div class="option-btn" onclick="selectArsulumChoice()">A PERSON</div>
+            <div class="option-btn" onclick="selectArsulumChoice()">A PLACE</div>
+            <div class="option-btn" onclick="selectArsulumChoice()">A CODE</div>
+            <div class="option-btn" onclick="selectArsulumChoice()">SOMETHING ELSE</div>
         </div>
     </div>
 
-    <!-- PART 10 CONTINUED — CLASSIFIED FILE -->
+    <!-- PART 10 — CLASSIFIED FILE -->
     <div id="screen-classified" class="screen">
         <h2>Classified File</h2>
-        <p>Could be.</p>
-        <p>We don't have enough information.</p>
-        
-        <div class="classified-box">
-            <p><strong>ARSULUM</strong></p>
-            <p>CLASSIFICATION: UNKNOWN</p>
-            <p>LOCATION: REDACTED</p>
-            <p>CONNECTION TO SUBJECT: CONFIRMED</p>
-            <p>ACCESS: RESTRICTED</p>
-            <p>Further information unavailable.</p>
-            <div class="handwritten">She'll understand when she's ready.</div>
-        </div>
+        <p>Could be. We don't have enough information.</p>
+        <img src="images/classified-file.jpg" alt="Classified Arsulum File">
         <button class="btn" onclick="startCliffhanger()">PROCEED →</button>
     </div>
 
-    <!-- PART 11 — END DAY 2 CLIFFHANGER -->
-    <div id="screen-cliffhanger" class="screen">
-        <h2>ARSULUM</h2>
-        <p>You came looking for something fun.</p>
-        <p>Instead, you found a name.</p>
-        <p>Don't forget it.</p>
-        <p>Tomorrow, we investigate.</p>
-        <button class="btn" onclick="window.location.href='day3.html'">DAY 3 — THE ARSULUM FILE →</button>
+    <!-- PART 11 — CLIFFHANGER -->
+    <div id="screen-cliffhanger" class="screen" style="background-image: url('images/cliffhanger.jpg'); background-size: cover; background-position: center;">
+        <div style="background: rgba(43, 27, 23, 0.92); padding: 30px; border: 1px solid var(--accent-gold);">
+            <h2>ARSULUM</h2>
+            <img src="images/arsulum.jpg" alt="Arsulum" style="max-height: 120px; margin: 10px 0;">
+            <p>You came looking for something fun. Instead, you found a name.</p>
+            <p>Don't forget it. Tomorrow, we investigate.</p>
+            <button class="btn" onclick="window.location.href='day3.html'">DAY 3 — THE ARSULUM FILE →</button>
+        </div>
     </div>
 
     <script>
-        // Progress tracking states
         let evidence = { l: false, u: false, m: false };
 
         function updateTrackerDisplay() {
@@ -401,117 +364,93 @@
             modal.style.display = 'flex';
         }
 
-        /* ================= PART 3: MENU ================= */
+        /* PART 3: MENU */
         function openMenu() {
-            let html = `
+            openModalHTML(`
+                <img src="images/menu.jpg" alt="Archive Cafe Menu" style="max-height: 180px;">
                 <h3>THE ARCHIVE CAFÉ</h3>
-                <p>You arrive at this café after traveling the world...</p>
-                <p>You haven't eaten Habesha food for so many days.</p>
-                <p style="color: var(--accent-gold);">What will you choose?</p>
+                <p>You haven't eaten Habesha food for so many days. What will you choose?</p>
                 <div class="options-grid">
                     <div class="option-btn" onclick="chooseMenu('Kitfo')">Kitfo</div>
                     <div class="option-btn" onclick="chooseMenu('Ribeye Steak')">Ribeye Steak</div>
                     <div class="option-btn" onclick="chooseMenu('Chicken Burger')">Chicken Burger</div>
                     <div class="option-btn" onclick="chooseMenu('Grilled Fish')">Grilled Fish</div>
                 </div>
-            `;
-            openModalHTML(html);
+            `);
         }
 
         function chooseMenu(dish) {
             evidence.l = true;
             updateTrackerDisplay();
-            let html = `
+            openModalHTML(`
                 <h3>ORDER RECEIVED</h3>
-                <p>Hmm...</p>
-                <p>That's exactly what we expected you to choose.</p>
-                <p>But wait... Your receipt is printing.</p>
+                <p>Hmm... That's exactly what we expected you to choose. Your receipt is printing:</p>
                 <img src="images/receipt.jpg" alt="Receipt">
-                <p style="color: var(--accent-gold); font-weight: bold; margin-top: 15px;">ARCHIVE CODE: L</p>
+                <p style="color: var(--accent-gold); font-weight: bold; margin-top: 10px;">ARCHIVE CODE: L</p>
                 <button class="action-btn" onclick="closeModal(); checkAllEvidenceCollected();">BACK TO ARCHIVE →</button>
-            `;
-            openModalHTML(html);
+            `);
         }
 
-        /* ================= PART 4: TRAVEL BUREAU ================= */
+        /* PART 4: TRAVEL BUREAU */
         function openTravel() {
-            let html = `
+            openModalHTML(`
                 <h3>TRAVEL BUREAU</h3>
-                <p>Apparently we've been keeping track of your travel habits.</p>
-                <p style="color: var(--accent-gold);">Choose your next destination.</p>
-                <img src="images/travel-bureau.jpg" alt="Travel Bureau" style="max-height: 200px;">
-                <div class="options-grid" style="margin-top: 15px;">
-                    <div class="option-btn" onclick="chooseTravel()">Paris, France</div>
-                    <div class="option-btn" onclick="chooseTravel()">Tokyo, Japan</div>
-                    <div class="option-btn" onclick="chooseTravel()">Zanzibar, Tanzania</div>
+                <p>Apparently we've been keeping track of your travel habits. Choose your next destination:</p>
+                <img src="images/travel-bureau.jpg" alt="Travel Bureau">
+                <div class="options-grid" style="margin-top: 10px;">
+                    <div class="option-btn" onclick="chooseTravel()">Destination Choice 1</div>
+                    <div class="option-btn" onclick="chooseTravel()">Destination Choice 2</div>
                 </div>
-            `;
-            openModalHTML(html);
+            `);
         }
 
         function chooseTravel() {
             evidence.u = true;
             updateTrackerDisplay();
-            let html = `
+            openModalHTML(`
                 <h3>TRAVEL PROFILE UPDATED</h3>
                 <p>Interesting choice.</p>
                 <p style="color: var(--accent-gold); font-weight: bold;">ARCHIVE CODE: U</p>
                 <button class="action-btn" onclick="closeModal(); checkAllEvidenceCollected();">BACK TO ARCHIVE →</button>
-            `;
-            openModalHTML(html);
+            `);
         }
 
-        /* ================= PART 6: PHOTO ARCHIVE ================= */
+        /* PART 6: PHOTO ARCHIVE */
         function openPhoto() {
-            let html = `
+            openModalHTML(`
                 <h3>PERSONAL ARCHIVE</h3>
-                <p>Most of these are exactly where they should be.</p>
-                <p>One isn't. <span style="color: var(--accent-gold);">Find it.</span></p>
+                <p>Most of these are where they should be. One isn't. <span style="color: var(--accent-gold);">Find it.</span></p>
                 <img src="images/photo-archive.jpg" alt="Photo Archive" style="cursor: pointer;" onclick="choosePhotoCorrect()">
                 <p style="font-size: 0.85rem; color: #888;">(Click the strange photo)</p>
-            `;
-            openModalHTML(html);
+            `);
         }
 
         function choosePhotoCorrect() {
             evidence.m = true;
             updateTrackerDisplay();
-            let html = `
+            openModalHTML(`
                 <h3>ANOMALY DETECTED</h3>
                 <p>Do you recognize this place?</p>
                 <div class="options-grid">
-                    <div class="option-btn" onclick="finishPhoto()">Yes, I do</div>
-                    <div class="option-btn" onclick="finishPhoto()">Not quite sure</div>
+                    <div class="option-btn" onclick="closeModal(); checkAllEvidenceCollected();">Yes, I do</div>
+                    <div class="option-btn" onclick="closeModal(); checkAllEvidenceCollected();">Not quite sure</div>
                 </div>
-            `;
-            openModalHTML(html);
+                <p style="color: var(--accent-gold); font-weight: bold; margin-top: 10px;">ARCHIVE CODE: M</p>
+            `);
         }
 
-        function finishPhoto() {
-            let html = `
-                <h3>ARCHIVE CODE RECOVERED</h3>
-                <p style="color: var(--accent-gold); font-weight: bold;">ARCHIVE CODE: M</p>
-                <button class="action-btn" onclick="closeModal(); checkAllEvidenceCollected();">BACK TO ARCHIVE →</button>
-            `;
-            openModalHTML(html);
-        }
-
-        /* ================= PART 7: ADMIRATION NOTE ================= */
+        /* PART 7: ADMIRATION NOTE */
         function openNote() {
-            let html = `
+            openModalHTML(`
                 <h3>PERSONAL NOTE</h3>
-                <p>Now everything goes quiet.</p>
                 <img src="images/admire.jpg" alt="Things I Admire About You">
                 <p style="margin-top: 15px; font-weight: bold; color: var(--accent-gold);">I LUVVVVV UUUU ❤️</p>
                 <button class="action-btn" onclick="closeModal()">OKAY… BACK TO THE CASE →</button>
-            `;
-            openModalHTML(html);
+            `);
         }
 
-        /* Check if L, U, M are all collected to transition to drawer */
         function checkAllEvidenceCollected() {
             if (evidence.l && evidence.u && evidence.m) {
-                // Fade out archive and move to locked drawer after a brief moment
                 setTimeout(() => {
                     document.getElementById('screen-archive').classList.remove('active');
                     document.getElementById('evidenceTracker').classList.remove('active');
@@ -520,7 +459,7 @@
             }
         }
 
-        /* ================= PART 8: LOCKED DRAWER LOGIC ================= */
+        /* PART 8: LOCKED DRAWER */
         function autoTab(current, nextFieldId) {
             if (current.value.length >= 1) {
                 document.getElementById(nextFieldId).focus();
@@ -557,15 +496,9 @@
             }
         }
 
-        /* ================= PART 9 & 10: ARSULUM CHOICES ================= */
-        function selectArsulumChoice(choice) {
-            let modalText = choice === 'A PLACE' ? "Could be. We don't have enough information." : "Could be. We don't have enough information.";
-            openModalHTML(`
-                <h3>ANALYSIS</h3>
-                <p>${modalText}</p>
-                <img src="images/classified-file.jpg" alt="Classified File">
-                <button class="action-btn" onclick="closeModal(); switchScreen('screen-classified');">VIEW CLASSIFIED FILE →</button>
-            `);
+        /* PART 9 & 10: ARSULUM CHOICES */
+        function selectArsulumChoice() {
+            switchScreen('screen-classified');
         }
 
         function startCliffhanger() {
