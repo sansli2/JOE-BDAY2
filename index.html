@@ -1,509 +1,1320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CASE 02 — The Things We Found</title>
-    <style>
-        :root {
-            --bg-color: #1a110e;
-            --container-bg: #2b1b17;
-            --accent-gold: #ffd700;
-            --text-color: #f4e8d8;
-            --border-color: #4a352f;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CASE 02 — The Things We Found</title>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Special+Elite&display=swap" rel="stylesheet">
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Courier New', Courier, monospace;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-        }
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-        .screen {
-            display: none;
-            width: 100%;
-            max-width: 750px;
-            padding: 40px;
-            background-color: var(--container-bg);
-            border: 2px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            text-align: center;
-            position: relative;
-            animation: fadeIn 0.6s ease-in-out;
-        }
+body{
+    background:#17110d;
+    color:#eadcc7;
+    font-family:'Cormorant Garamond',serif;
+    min-height:100vh;
+    overflow-x:hidden;
+}
 
-        .screen.active {
-            display: block;
-        }
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.12;
+    z-index:100;
+    background-image:
+        repeating-radial-gradient(circle at 20% 30%, #fff 0 1px, transparent 1px 4px);
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.screen{
+    min-height:100vh;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:30px 18px;
+    animation:fade .8s ease;
+}
 
-        /* Fullscreen Archive Background */
-        .fullscreen-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: url('images/archive-room.jpg');
-            background-size: cover;
-            background-position: center;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
+.screen.active{
+    display:flex;
+}
 
-        .fullscreen-bg.active {
-            display: flex;
-        }
+@keyframes fade{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
 
-        .archive-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            height: 85vh;
-        }
+.container{
+    width:min(900px,100%);
+    text-align:center;
+}
 
-        /* Invisible clickable hot-spots over archive-room.jpg */
-        .hotspot {
-            position: absolute;
-            background: rgba(255, 215, 0, 0.05);
-            border: 2px dashed rgba(255, 215, 0, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.small-label{
+    font-family:'Special Elite',monospace;
+    font-size:.75rem;
+    letter-spacing:4px;
+    color:#a99172;
+    margin-bottom:15px;
+}
 
-        .hotspot:hover {
-            background: rgba(255, 215, 0, 0.3);
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 15px var(--accent-gold);
-        }
+h1{
+    font-size:clamp(2.5rem,8vw,5.5rem);
+    font-weight:500;
+    letter-spacing:3px;
+    line-height:1;
+}
 
-        /* Adjust coordinates to match your archive-room.jpg items */
-        #spot-menu { top: 35%; left: 15%; width: 15%; height: 20%; }
-        #spot-travel { top: 60%; left: 40%; width: 18%; height: 22%; }
-        #spot-photo { top: 30%; left: 68%; width: 16%; height: 20%; }
-        #spot-note { top: 65%; left: 75%; width: 15%; height: 18%; }
+h2{
+    font-size:clamp(2rem,6vw,4rem);
+    font-weight:500;
+    margin-bottom:18px;
+}
 
-        /* Evidence Tracker Footer */
-        .evidence-tracker {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(43, 27, 23, 0.95);
-            padding: 12px 25px;
-            border: 2px solid var(--accent-gold);
-            border-radius: 4px;
-            font-size: 1.1rem;
-            letter-spacing: 3px;
-            z-index: 100;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            display: none;
-        }
+p{
+    font-size:1.2rem;
+    line-height:1.7;
+}
 
-        .evidence-tracker.active {
-            display: block;
-        }
+.mono{
+    font-family:'Special Elite',monospace;
+}
 
-        h2, h3 {
-            color: var(--accent-gold);
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+.btn{
+    border:1px solid #806b50;
+    background:#211812;
+    color:#eadcc7;
+    padding:14px 26px;
+    font-family:'Special Elite',monospace;
+    letter-spacing:2px;
+    cursor:pointer;
+    margin-top:25px;
+    transition:.3s;
+}
 
-        p {
-            line-height: 1.6;
-            margin-bottom: 20px;
-            font-size: 1.05rem;
-        }
+.btn:hover{
+    background:#806b50;
+    color:#17110d;
+    transform:translateY(-2px);
+}
 
-        .btn, button.action-btn {
-            background: transparent;
-            color: var(--accent-gold);
-            border: 2px solid var(--accent-gold);
-            padding: 12px 30px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-            text-transform: uppercase;
-        }
+.image{
+    width:100%;
+    max-height:520px;
+    object-fit:cover;
+    display:block;
+    margin:25px auto;
+    border:1px solid #806b50;
+    box-shadow:0 15px 45px #0008;
+}
 
-        .btn:hover, button.action-btn:hover {
-            background: var(--accent-gold);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-        }
+.paper{
+    background:#d8c4a4;
+    color:#30251b;
+    padding:35px;
+    max-width:700px;
+    margin:25px auto;
+    box-shadow:0 15px 45px #0009;
+}
 
-        .options-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0;
-        }
+.paper p{
+    color:#30251b;
+}
 
-        .option-btn {
-            background: rgba(43, 27, 23, 0.9);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
+.divider{
+    width:90px;
+    height:1px;
+    background:#806b50;
+    margin:25px auto;
+}
 
-        .option-btn:hover {
-            border-color: var(--accent-gold);
-            color: var(--accent-gold);
-            background: rgba(255, 215, 0, 0.1);
-        }
+/* MORNING */
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-            padding: 20px;
-        }
+.morning{
+    background:
+        linear-gradient(#17110d99,#17110ddd),
+        url("day2-morning.jpg") center/cover;
+}
 
-        .modal-content {
-            background: var(--container-bg);
-            border: 2px solid var(--accent-gold);
-            padding: 35px;
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+/* ARCHIVE */
 
-        .modal-content img {
-            max-width: 100%;
-            height: auto;
-            margin: 15px 0;
-            border: 1px solid var(--border-color);
-        }
+.archive-layout{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:20px;
+}
 
-        /* Drawer inputs */
-        .code-inputs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 25px 0;
-        }
+.archive-image{
+    position:relative;
+}
 
-        .code-inputs input {
-            width: 55px;
-            height: 65px;
-            background: var(--bg-color);
-            border: 2px solid var(--border-color);
-            color: var(--accent-gold);
-            font-size: 2rem;
-            text-align: center;
-            font-family: 'Courier New', Courier, monospace;
-            text-transform: uppercase;
-            border-radius: 4px;
-        }
+.archive-image img{
+    width:100%;
+    display:block;
+    border:1px solid #806b50;
+    box-shadow:0 15px 40px #0009;
+}
 
-        .code-inputs input:focus {
-            border-color: var(--accent-gold);
-            outline: none;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-        }
-    </style>
+.archive-intro{
+    background:#211812;
+    border:1px solid #66543f;
+    padding:25px;
+}
+
+.archive-intro h2{
+    font-size:2.5rem;
+}
+
+.objects{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:20px;
+}
+
+.object{
+    padding:15px 8px;
+    background:#241b15;
+    border:1px solid #66543f;
+    cursor:pointer;
+    font-family:'Special Elite',monospace;
+    font-size:.75rem;
+    color:#cdbb9e;
+    transition:.3s;
+}
+
+.object:hover{
+    background:#5b4937;
+    color:#fff;
+}
+
+/* EVIDENCE */
+
+.evidence{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin:25px 0;
+}
+
+.letter{
+    width:65px;
+    height:65px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #806b50;
+    background:#211812;
+    font-family:'Special Elite',monospace;
+    font-size:1.6rem;
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:#090604e8;
+    z-index:200;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal.active{
+    display:flex;
+}
+    .modal-box{
+    width:min(850px,100%);
+    max-height:92vh;
+    overflow-y:auto;
+    background:#1d1510;
+    border:1px solid #806b50;
+    padding:25px;
+    box-shadow:0 20px 70px #000;
+    animation:modalIn .4s ease;
+}
+
+@keyframes modalIn{
+    from{opacity:0;transform:scale(.96);}
+    to{opacity:1;transform:scale(1);}
+}
+
+.modal-box img{
+    width:100%;
+    max-height:430px;
+    object-fit:cover;
+    margin-bottom:20px;
+    border:1px solid #806b50;
+}
+
+.close{
+    float:right;
+    border:0;
+    background:none;
+    color:#c8b496;
+    font-size:1.7rem;
+    cursor:pointer;
+}
+
+.choices{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-top:25px;
+}
+
+.choice{
+    padding:16px;
+    border:1px solid #806b50;
+    background:#241a14;
+    color:#eadcc7;
+    cursor:pointer;
+    font-family:'Cormorant Garamond',serif;
+    font-size:1.1rem;
+    transition:.3s;
+}
+
+.choice:hover{
+    background:#5b4937;
+}
+
+.result{
+    display:none;
+    margin-top:25px;
+    animation:fade .5s ease;
+}
+
+.result.show{
+    display:block;
+}
+
+.receipt{
+    background:#e1d0b1;
+    color:#2c2118;
+    padding:28px;
+    max-width:500px;
+    margin:20px auto;
+    font-family:'Special Elite',monospace;
+    text-align:left;
+    box-shadow:0 10px 30px #0008;
+}
+
+.receipt hr{
+    border:0;
+    border-top:1px dashed #5d4b38;
+    margin:15px 0;
+}
+
+/* ADMIRE */
+
+.admire-note{
+    background:#e0cfb0;
+    color:#34271d;
+    padding:35px;
+    text-align:left;
+    box-shadow:0 15px 45px #0009;
+}
+
+.admire-note h3{
+    font-size:1.5rem;
+    margin-bottom:20px;
+}
+
+.admire-note p{
+    color:#34271d;
+    margin-bottom:16px;
+}
+
+/* DRAWER */
+
+.code-area{
+    text-align:center;
+    margin-top:25px;
+}
+
+.code-input{
+    width:160px;
+    padding:14px;
+    background:#100c09;
+    color:#eadcc7;
+    border:1px solid #806b50;
+    text-align:center;
+    font-family:'Special Elite',monospace;
+    font-size:1.4rem;
+    letter-spacing:5px;
+    text-transform:uppercase;
+}
+
+.hidden-reveal{
+    display:none;
+    margin-top:25px;
+    animation:fade .7s ease;
+}
+
+.hidden-reveal.show{
+    display:block;
+}
+
+.arsu{
+    font-size:3rem;
+    letter-spacing:12px;
+    margin:20px 0;
+}
+
+/* END */
+
+.end-card{
+    border:1px solid #806b50;
+    padding:45px 25px;
+    background:#211812;
+}
+
+.clue{
+    font-family:'Special Elite',monospace;
+    letter-spacing:3px;
+    color:#a99172;
+    margin:20px 0;
+}
+
+@media(max-width:600px){
+    .objects{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .choices{
+        grid-template-columns:1fr;
+    }
+
+    .paper{
+        padding:22px;
+    }
+
+    .modal-box{
+        padding:18px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <!-- PERSISTENT EVIDENCE TRACKER -->
-    <div id="evidenceTracker" class="evidence-tracker">
-        EVIDENCE: <span id="slot1">[ _ ]</span> <span id="slot2">[ _ ]</span> <span id="slot3">[ _ ]</span>
-    </div>
+<!-- ================= DAY 2 OPENING ================= -->
 
-    <!-- PART 1 — OPENING (Using day2-morning.jpg background styling) -->
-    <div id="screen-opening" class="screen active" style="background-image: url('images/day2-morning.jpg'); background-size: cover; background-position: center;">
-        <div style="background: rgba(43, 27, 23, 0.92); padding: 30px; border: 1px solid var(--accent-gold);">
-            <h2>CASE 02</h2>
-            <h3>The Morning After</h3>
-            <p>You shouldn't have opened it.</p>
-            <p>But since you did...</p>
+<section id="morning" class="screen active morning">
+    <div class="container">
+
+        <div class="small-label">THE MORNING AFTER</div>
+
+        <h1>CASE 02</h1>
+
+        <div class="divider"></div>
+
+        <div class="paper">
+            <p class="mono">You shouldn't have opened it.</p>
+            <br>
+            <p class="mono">But since you did...</p>
+            <br>
             <p>Start with yourself.</p>
-            <hr style="border-color: var(--border-color); margin: 20px 0;">
-            <p style="color: var(--accent-gold); font-weight: bold;">SUBJECT: JOE</p>
+        </div>
+
+        <div class="paper">
+            <p class="mono">SUBJECT: JOE</p>
+            <br>
             <p>We spent the night looking through the records.</p>
-            <p>We found some things. Some are ordinary. Some are... very Joe.</p>
+            <p>We found some things.</p>
+            <p>Some are ordinary.</p>
+            <p>Some are...</p>
+            <p><i>very Joe.</i></p>
+            <br>
             <p>And one thing doesn't belong there.</p>
-            <button class="btn" onclick="enterArchive()">ENTER THE ARCHIVE →</button>
         </div>
+
+        <button class="btn" onclick="showScreen('archive')">
+            ENTER THE ARCHIVE
+        </button>
+
     </div>
+</section>
 
-    <!-- PART 2 — ARCHIVE ROOM -->
-    <div id="screen-archive" class="fullscreen-bg">
-        <div class="archive-container">
-            <div id="spot-menu" class="hotspot" onclick="openMenu()" title="Menu"></div>
-            <div id="spot-travel" class="hotspot" onclick="openTravel()" title="Travel Bureau"></div>
-            <div id="spot-photo" class="hotspot" onclick="openPhoto()" title="Photo Archive"></div>
-            <div id="spot-note" class="hotspot" onclick="openNote()" title="Personal Note"></div>
-        </div>
-    </div>
 
-    <!-- MODAL CONTAINER -->
-    <div id="modalOverlay" class="modal-overlay">
-        <div id="modalContentBox" class="modal-content"></div>
-    </div>
+<!-- ================= ARCHIVE ================= -->
 
-    <!-- PART 8 — LOCKED DRAWER SCREEN -->
-    <div id="screen-drawer" class="screen">
-        <h2>Locked Drawer</h2>
-        <p>EVIDENCE RECOVERED</p>
-        <p>You found three letters.</p>
-        <p style="color: var(--accent-gold); font-size: 1.3rem; letter-spacing: 4px;">L · U · M</p>
-        <p>And apparently... they're needed for something.</p>
-        
-        <div class="code-inputs">
-            <input type="text" maxlength="1" id="box1" oninput="autoTab(this, 'box2')">
-            <input type="text" maxlength="1" id="box2" oninput="autoTab(this, 'box3')">
-            <input type="text" maxlength="1" id="box3" oninput="checkDrawerCode()">
-        </div>
-        <p id="drawerFeedback" style="color: #ff6b6b; min-height: 25px;"></p>
-    </div>
+<section id="archive" class="screen">
+    <div class="container">
 
-    <!-- PART 9 — ARSULUM QUESTION -->
-    <div id="screen-arsulum" class="screen">
-        <img src="images/arsulum-question.jpg" alt="Arsulum Question" style="max-width: 100%; margin-bottom: 15px; border: 1px solid var(--border-color);">
-        <h2>ARSULUM</h2>
-        <p style="font-size: 1.1rem; color: var(--accent-gold); letter-spacing: 3px;">ARSU &nbsp;+&nbsp; L U M</p>
-        <p>You've seen this word before. You just didn't know it was important. Now you do.</p>
-        <p style="color: var(--accent-gold);">What is Arsulum?</p>
-        
-        <div class="options-grid">
-            <div class="option-btn" onclick="selectArsulumChoice()">A PERSON</div>
-            <div class="option-btn" onclick="selectArsulumChoice()">A PLACE</div>
-            <div class="option-btn" onclick="selectArsulumChoice()">A CODE</div>
-            <div class="option-btn" onclick="selectArsulumChoice()">SOMETHING ELSE</div>
-        </div>
-    </div>
+        <div class="small-label">ARCHIVE ROOM</div>
 
-    <!-- PART 10 — CLASSIFIED FILE -->
-    <div id="screen-classified" class="screen">
-        <h2>Classified File</h2>
-        <p>Could be. We don't have enough information.</p>
-        <img src="images/classified-file.jpg" alt="Classified Arsulum File">
-        <button class="btn" onclick="startCliffhanger()">PROCEED →</button>
-    </div>
+        <h2>THE THINGS WE FOUND</h2>
 
-    <!-- PART 11 — CLIFFHANGER -->
-    <div id="screen-cliffhanger" class="screen" style="background-image: url('images/cliffhanger.jpg'); background-size: cover; background-position: center;">
-        <div style="background: rgba(43, 27, 23, 0.92); padding: 30px; border: 1px solid var(--accent-gold);">
-            <h2>ARSULUM</h2>
-            <img src="images/arsulum.jpg" alt="Arsulum" style="max-height: 120px; margin: 10px 0;">
-            <p>You came looking for something fun. Instead, you found a name.</p>
-            <p>Don't forget it. Tomorrow, we investigate.</p>
-            <button class="btn" onclick="window.location.href='day3.html'">DAY 3 — THE ARSULUM FILE →</button>
-        </div>
-    </div>
+        <div class="archive-layout">
 
-    <script>
-        let evidence = { l: false, u: false, m: false };
+            <div class="archive-image">
+                <img src="archive-room.jpg">
+            </div>
+            <div class="archive-intro">
+                <p>
+                    Welcome to the archive.
+                </p>
 
-        function updateTrackerDisplay() {
-            document.getElementById('evidenceTracker').classList.add('active');
-            document.getElementById('slot1').textContent = evidence.l ? '[ L ]' : '[ _ ]';
-            document.getElementById('slot2').textContent = evidence.u ? '[ U ]' : '[ _ ]';
-            document.getElementById('slot3').textContent = evidence.m ? '[ M ]' : '[ _ ]';
-        }
+                <p>
+                    Somewhere in here are pieces of a file
+                    that was never supposed to be found.
+                </p>
 
-        function switchScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.fullscreen-bg').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-        }
+                <p style="margin-top:15px;">
+                    Look around.
+                    Start with something that feels very...
+                    <i>you.</i>
+                </p>
 
-        function enterArchive() {
-            document.getElementById('screen-opening').classList.remove('active');
-            document.getElementById('screen-archive').classList.add('active');
-            updateTrackerDisplay();
-        }
+                <div class="objects">
 
-        function closeModal() {
-            document.getElementById('modalOverlay').style.display = 'none';
-        }
+                    <button class="object" onclick="openModal('cafeModal')">
+                        CAFÉ RECORD
+                    </button>
 
-        function openModalHTML(htmlContent) {
-            const modal = document.getElementById('modalOverlay');
-            const box = document.getElementById('modalContentBox');
-            box.innerHTML = htmlContent;
-            modal.style.display = 'flex';
-        }
+                    <button class="object" onclick="openModal('travelModal')">
+                        TRAVEL BUREAU
+                    </button>
 
-        /* PART 3: MENU */
-        function openMenu() {
-            openModalHTML(`
-                <img src="images/menu.jpg" alt="Archive Cafe Menu" style="max-height: 180px;">
-                <h3>THE ARCHIVE CAFÉ</h3>
-                <p>You haven't eaten Habesha food for so many days. What will you choose?</p>
-                <div class="options-grid">
-                    <div class="option-btn" onclick="chooseMenu('Kitfo')">Kitfo</div>
-                    <div class="option-btn" onclick="chooseMenu('Ribeye Steak')">Ribeye Steak</div>
-                    <div class="option-btn" onclick="chooseMenu('Chicken Burger')">Chicken Burger</div>
-                    <div class="option-btn" onclick="chooseMenu('Grilled Fish')">Grilled Fish</div>
+                    <button class="object" onclick="openModal('photoModal')">
+                        PHOTO ARCHIVE
+                    </button>
+
+                    <button class="object" onclick="openModal('admireModal')">
+                        SEALED NOTE
+                    </button>
+
                 </div>
-            `);
-        }
 
-        function chooseMenu(dish) {
-            evidence.l = true;
-            updateTrackerDisplay();
-            openModalHTML(`
-                <h3>ORDER RECEIVED</h3>
-                <p>Hmm... That's exactly what we expected you to choose. Your receipt is printing:</p>
-                <img src="images/receipt.jpg" alt="Receipt">
-                <p style="color: var(--accent-gold); font-weight: bold; margin-top: 10px;">ARCHIVE CODE: L</p>
-                <button class="action-btn" onclick="closeModal(); checkAllEvidenceCollected();">BACK TO ARCHIVE →</button>
-            `);
-        }
+                <div class="evidence">
 
-        /* PART 4: TRAVEL BUREAU */
-        function openTravel() {
-            openModalHTML(`
-                <h3>TRAVEL BUREAU</h3>
-                <p>Apparently we've been keeping track of your travel habits. Choose your next destination:</p>
-                <img src="images/travel-bureau.jpg" alt="Travel Bureau">
-                <div class="options-grid" style="margin-top: 10px;">
-                    <div class="option-btn" onclick="chooseTravel()">Destination Choice 1</div>
-                    <div class="option-btn" onclick="chooseTravel()">Destination Choice 2</div>
+                    <div id="letter1" class="letter">?</div>
+                    <div id="letter2" class="letter">?</div>
+                    <div id="letter3" class="letter">?</div>
+
                 </div>
-            `);
-        }
 
-        function chooseTravel() {
-            evidence.u = true;
-            updateTrackerDisplay();
-            openModalHTML(`
-                <h3>TRAVEL PROFILE UPDATED</h3>
-                <p>Interesting choice.</p>
-                <p style="color: var(--accent-gold); font-weight: bold;">ARCHIVE CODE: U</p>
-                <button class="action-btn" onclick="closeModal(); checkAllEvidenceCollected();">BACK TO ARCHIVE →</button>
-            `);
-        }
+                <button class="btn" onclick="openDrawer()">
+                    EXAMINE THE LOCKED DRAWER
+                </button>
 
-        /* PART 6: PHOTO ARCHIVE */
-        function openPhoto() {
-            openModalHTML(`
-                <h3>PERSONAL ARCHIVE</h3>
-                <p>Most of these are where they should be. One isn't. <span style="color: var(--accent-gold);">Find it.</span></p>
-                <img src="images/photo-archive.jpg" alt="Photo Archive" style="cursor: pointer;" onclick="choosePhotoCorrect()">
-                <p style="font-size: 0.85rem; color: #888;">(Click the strange photo)</p>
-            `);
-        }
+            </div>
 
-        function choosePhotoCorrect() {
-            evidence.m = true;
-            updateTrackerDisplay();
-            openModalHTML(`
-                <h3>ANOMALY DETECTED</h3>
-                <p>Do you recognize this place?</p>
-                <div class="options-grid">
-                    <div class="option-btn" onclick="closeModal(); checkAllEvidenceCollected();">Yes, I do</div>
-                    <div class="option-btn" onclick="closeModal(); checkAllEvidenceCollected();">Not quite sure</div>
-                </div>
-                <p style="color: var(--accent-gold); font-weight: bold; margin-top: 10px;">ARCHIVE CODE: M</p>
-            `);
-        }
+        </div>
 
-        /* PART 7: ADMIRATION NOTE */
-        function openNote() {
-            openModalHTML(`
-                <h3>PERSONAL NOTE</h3>
-                <img src="images/admire.jpg" alt="Things I Admire About You">
-                <p style="margin-top: 15px; font-weight: bold; color: var(--accent-gold);">I LUVVVVV UUUU ❤️</p>
-                <button class="action-btn" onclick="closeModal()">OKAY… BACK TO THE CASE →</button>
-            `);
-        }
+    </div>
+</section>
 
-        function checkAllEvidenceCollected() {
-            if (evidence.l && evidence.u && evidence.m) {
-                setTimeout(() => {
-                    document.getElementById('screen-archive').classList.remove('active');
-                    document.getElementById('evidenceTracker').classList.remove('active');
-                    switchScreen('screen-drawer');
-                }, 400);
-            }
-        }
 
-        /* PART 8: LOCKED DRAWER */
-        function autoTab(current, nextFieldId) {
-            if (current.value.length >= 1) {
-                document.getElementById(nextFieldId).focus();
-            }
-        }
+<!-- ================= CAFE MODAL ================= -->
 
-        function checkDrawerCode() {
-            const b1 = document.getElementById('box1').value.toUpperCase();
-            const b2 = document.getElementById('box2').value.toUpperCase();
-            const b3 = document.getElementById('box3').value.toUpperCase();
-            const feedback = document.getElementById('drawerFeedback');
+<div id="cafeModal" class="modal">
 
-            if (b1 === 'L' && b2 === 'U' && b3 === 'M') {
-                feedback.style.color = 'var(--accent-gold)';
-                feedback.textContent = 'ACCESS GRANTED... That shouldn’t have worked.';
-                setTimeout(() => {
-                    openModalHTML(`
-                        <h3>LOCKED DRAWER OPENED</h3>
-                        <img src="images/locked-drawer.jpg" alt="Unlocked Drawer">
-                        <p style="color: var(--accent-gold); margin-top: 15px;">ARSU RECOVERED FROM DRAWER</p>
-                        <button class="action-btn" onclick="closeModal(); switchScreen('screen-arsulum');">CONTINUE →</button>
-                    `);
-                }, 1200);
-            } else if (b1 && b2 && b3) {
-                feedback.style.color = '#ff6b6b';
-                feedback.textContent = 'Nope. Try again, detective.';
-                setTimeout(() => {
-                    document.getElementById('box1').value = '';
-                    document.getElementById('box2').value = '';
-                    document.getElementById('box3').value = '';
-                    document.getElementById('box1').focus();
-                    feedback.textContent = '';
-                }, 1500);
-            }
-        }
+<div class="modal-box">
 
-        /* PART 9 & 10: ARSULUM CHOICES */
-        function selectArsulumChoice() {
-            switchScreen('screen-classified');
-        }
+<button class="close" onclick="closeModal('cafeModal')">×</button>
 
-        function startCliffhanger() {
-            switchScreen('screen-cliffhanger');
-        }
-    </script>
+<img src="menu.jpg">
+
+<div class="small-label">THE ARCHIVE CAFÉ</div>
+
+<h2>JOE'S GUEST</h2>
+
+<p>
+You arrive at this café, traveling the world so much,
+not eating 'habesha' food for so many days.
+</p>
+
+<p style="margin-top:10px;">
+<strong>What will you choose?</strong>
+</p>
+
+<div class="choices">
+
+<button class="choice" onclick="chooseFood('Kitfo')">
+Kitfo
+</button>
+
+<button class="choice" onclick="chooseFood('Ribeye Steak')">
+Ribeye Steak
+</button>
+
+<button class="choice" onclick="chooseFood('Chicken Burger')">
+Chicken Burger
+</button>
+
+<button class="choice" onclick="chooseFood('Grilled Fish')">
+Grilled Fish
+</button>
+
+</div>
+
+<div id="foodResult" class="result">
+
+<p class="mono">ORDER RECEIVED.</p>
+
+<p>
+Hmm...
+That's exactly what we expected you to choose.
+</p>
+
+<p>
+But wait.
+Your receipt is printing...
+</p>
+
+<div class="receipt">
+
+<strong>THE ARCHIVE CAFÉ</strong>
+
+<hr>
+
+GUEST: JOE<br>
+ORDER: <span id="foodChoice"></span><br>
+STATUS: APPROVED<br>
+TABLE: L-07
+
+<hr>
+
+ARCHIVE CODE:
+
+<strong>L</strong>
+
+<br><br>
+
+Keep this.
+You'll need it later.
+
+</div>
+
+<button class="btn" onclick="revealLetter('L','letter1'); closeModal('cafeModal')">
+KEEP THE RECEIPT
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= TRAVEL MODAL ================= -->
+
+<div id="travelModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('travelModal')">×</button>
+
+<img src="travel-bureau.jpg">
+
+<div class="small-label">FORGOTTEN TRAVEL BUREAU</div>
+
+<h2>WHERE WOULD JOE GO?</h2>
+
+<p>
+The records say you have always wanted to see more of the world.
+</p>
+
+<p style="margin-top:10px;">
+So the archive has one question for you.
+</p>
+
+<p style="margin-top:10px;">
+<strong>Choose your next destination.</strong>
+</p>
+
+<div class="choices">
+
+<button class="choice" onclick="chooseDestination('Paris')">
+Paris
+</button>
+
+<button class="choice" onclick="chooseDestination('Japan')">
+Japan
+</button>
+
+<button class="choice" onclick="chooseDestination('Italy')">
+Italy
+</button>
+
+<button class="choice" onclick="chooseDestination('Somewhere Unknown')">
+Somewhere Unknown
+</button>
+
+</div>
+
+<div id="travelResult" class="result">
+
+<p class="mono">DESTINATION RECORDED.</p>
+
+<p id="travelText"></p>
+
+<div class="paper">
+
+<p class="mono">
+TRAVEL FILE — JOE
+</p>
+
+<br>
+<p>
+DESTINATION: <span id="destinationChoice"></span>
+</p>
+
+<p>
+STATUS: APPROVED
+</p>
+
+<p>
+ARCHIVE CODE:
+<strong>U</strong>
+</p>
+
+<br>
+
+<p class="mono">
+Do not lose this page.
+</p>
+
+</div>
+
+<button class="btn" onclick="revealLetter('U','letter2'); closeModal('travelModal')">
+ADD TO THE FILE
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= PHOTO MODAL ================= -->
+
+<div id="photoModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('photoModal')">×</button>
+
+<img src="photo-archive.jpg">
+
+<div class="small-label">PHOTO ARCHIVE</div>
+
+<h2>ONE OF THESE DOESN'T BELONG.</h2>
+
+<p>
+Someone marked one photograph in the archive.
+</p>
+
+<p>
+Do you recognize the place?
+</p>
+
+<div class="choices">
+
+<button class="choice" onclick="photoChoice('A')">
+PHOTO A
+</button>
+
+<button class="choice" onclick="photoChoice('B')">
+PHOTO B
+</button>
+
+<button class="choice" onclick="photoChoice('C')">
+PHOTO C
+</button>
+
+<button class="choice" onclick="photoChoice('D')">
+PHOTO D
+</button>
+
+</div>
+
+<div id="photoResult" class="result">
+
+<p class="mono">
+PHOTO IDENTIFIED.
+</p>
+
+<p>
+Interesting...
+You noticed it.
+</p>
+
+<p>
+Turn it over.
+</p>
+
+<div class="paper">
+
+<p class="mono">
+ARCHIVE MARKING
+</p>
+
+<br>
+
+<p style="font-size:3rem;text-align:center;">
+M
+</p>
+
+<br>
+
+<p style="text-align:center;">
+This was not a mistake.
+</p>
+
+</div>
+
+<button class="btn" onclick="revealLetter('M','letter3'); closeModal('photoModal')">
+KEEP THE PHOTOGRAPH
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= ADMIRE MODAL ================= -->
+
+<div id="admireModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('admireModal')">×</button>
+
+<img src="admire.jpg">
+
+<div class="small-label">PERSONAL RECORD</div>
+
+<div class="admire-note">
+
+<h3>Okay… one thing the archive can't keep secret.</h3>
+
+<p>
+I genuinely admire you, Joe.
+I admire the way you are completely yourself,
+the way you can make ordinary moments more fun,
+and the little things that make you <i>you</i>.
+</p>
+
+<p>
+You’re honestly one of those people I’m really glad I got to know.
+And even if I don’t say it all the time,
+I appreciate having you in my life more than you probably realize.
+</p>
+
+<p>
+So yeah… this is me admitting it. 😭
+<strong>I admire you. A lot.</strong>
+</p>
+
+<p>
+Now forget you ever saw this before I get embarrassed.
+</p>
+
+<p>
+<strong>I LUVVVVV UUUU ❤️</strong>
+</p>
+
+</div>
+
+<button class="btn" onclick="closeModal('admireModal')">
+FORGET YOU SAW THIS
+</button>
+
+</div>
+</div>
+
+
+<!-- ================= DRAWER MODAL ================= -->
+
+<div id="drawerModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('drawerModal')">×</button>
+
+<img src="locked-drawer.jpg">
+
+<div class="small-label">RESTRICTED ARCHIVE</div>
+
+<h2>THE LOCKED DRAWER</h2>
+
+<p>
+Three letters have appeared throughout the records.
+</p>
+
+<div class="evidence">
+
+<div class="letter">L</div>
+<div class="letter">U</div>
+<div class="letter">M</div>
+
+</div>
+
+<p>
+Maybe they belong together.
+</p>
+
+<div class="code-area">
+
+<input
+id="codeInput"
+class="code-input"
+maxlength="3"
+placeholder="___"
+>
+
+<br>
+
+<button class="btn" onclick="unlockDrawer()">
+UNLOCK
+</button>
+
+<p id="wrongCode" style="display:none;margin-top:15px;color:#b68e6c;">
+The drawer doesn't move.
+Try again.
+</p>
+
+</div>
+
+<div id="drawerReveal" class="hidden-reveal">
+
+<div class="paper">
+
+<p class="mono">
+EVIDENCE RECOVERED
+</p>
+
+<div class="arsu">
+ARSU
+</div>
+
+<p>
+There was something else inside.
+Something that makes the three letters
+suddenly feel much less random.
+</p>
+
+<div class="divider"></div>
+
+<p class="mono">
+ARSU + LUM
+</p>
+
+<h2 style="margin-top:15px;">
+ARSULUM
+</h2>
+
+</div>
+
+<button class="btn" onclick="closeModal('drawerModal'); openArsulum()">
+EXAMINE THE WORD
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= ARSULUM MODAL ================= -->
+
+<div id="arsulumModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('arsulumModal')">×</button>
+
+<img src="arsulum.jpg">
+<div class="small-label">UNKNOWN FILE</div>
+
+<h2>ARSULUM</h2>
+
+<p>
+You've seen this word before.
+</p>
+
+<p>
+You just didn't know it was important.
+</p>
+
+<p style="margin-top:15px;">
+Now you do.
+</p>
+
+<div class="divider"></div>
+
+<p>
+But we still have one problem.
+</p>
+
+<p style="margin-top:10px;">
+<strong>What is Arsulum?</strong>
+</p>
+
+<div class="choices">
+
+<button class="choice" onclick="arsulumAnswer()">
+A PERSON
+</button>
+
+<button class="choice" onclick="arsulumAnswer()">
+A PLACE
+</button>
+
+<button class="choice" onclick="arsulumAnswer()">
+A CODE
+</button>
+
+<button class="choice" onclick="arsulumAnswer()">
+SOMETHING ELSE
+</button>
+
+</div>
+
+<div id="arsulumResult" class="result">
+
+<img src="arsulum-question.jpg">
+
+<div class="paper">
+
+<p>
+Could be.
+</p>
+
+<p>
+But we don't have enough information.
+</p>
+
+<br>
+
+<p class="mono">
+ARSULUM
+</p>
+
+<p>
+Classification: UNKNOWN
+</p>
+
+</div>
+
+<button class="btn" onclick="closeModal('arsulumModal'); openClassified()">
+OPEN THE LAST DOCUMENT
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= CLASSIFIED ================= -->
+
+<div id="classifiedModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal('classifiedModal')">×</button>
+
+<img src="classified-file.jpg">
+
+<div class="small-label">CLASSIFIED DOCUMENT</div>
+
+<div class="paper">
+
+<h2>ARSULUM</h2>
+
+<p class="mono">
+Classification: UNKNOWN
+</p>
+
+<br>
+
+<p class="mono">
+Location: REDACTED
+</p>
+
+<br>
+
+<p class="mono">
+Connection to subject: CONFIRMED
+</p>
+
+<br>
+
+<p class="mono">
+Access: RESTRICTED
+</p>
+
+<br>
+
+<p class="mono">
+Further information unavailable.
+</p>
+
+</div>
+
+<p>
+Someone deliberately hid this from you.
+</p>
+
+<div class="paper">
+
+<p class="mono">
+"She'll understand when she's ready."
+</p>
+
+</div>
+
+<button class="btn" onclick="closeModal('classifiedModal'); showEnding()">
+CONTINUE
+</button>
+
+</div>
+</div>
+
+
+<!-- ================= ENDING ================= -->
+
+<section id="ending" class="screen">
+
+<div class="container">
+
+<img class="image" src="cliffhanger.jpg">
+
+<div class="end-card">
+
+<div class="small-label">
+CASE 02 — CLOSED
+</div>
+
+<h1>ARSULUM</h1>
+
+<div class="divider"></div>
+
+<p>
+You came looking for something fun.
+</p>
+
+<p>
+Instead, you found a name.
+</p>
+
+<p style="margin-top:15px;">
+Don't forget it.
+</p>
+
+<br>
+
+<p class="mono">
+Tomorrow, we investigate.
+</p>
+
+<button class="btn" onclick="goToDay3()">
+DAY 3 — THE ARSULUM FILE
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<script>
+
+/* ================= SCREEN CONTROL ================= */
+
+function showScreen(id){
+
+    document.querySelectorAll('.screen').forEach(screen=>{
+        screen.classList.remove('active');
+    });
+
+    document.getElementById(id).classList.add('active');
+
+    window.scrollTo({
+        top:0,
+        behavior:'smooth'
+    });
+}
+
+
+/* ================= MODALS ================= */
+
+function openModal(id){
+    document.getElementById(id).classList.add('active');
+}
+
+function closeModal(id){
+    document.getElementById(id).classList.remove('active');
+}
+
+
+/* ================= EVIDENCE ================= */
+
+function revealLetter(letter,id){
+
+    document.getElementById(id).textContent = letter;
+
+}
+
+
+/* ================= FOOD ================= */
+
+function chooseFood(food){
+
+    document.getElementById('foodChoice').textContent = food;
+
+    document.getElementById('foodResult').classList.add('show');
+
+}
+
+
+/* ================= TRAVEL ================= */
+
+function chooseDestination(destination){
+
+    document.getElementById('destinationChoice').textContent = destination;
+
+    document.getElementById('travelText').textContent =
+        "The archive approves your choice. Apparently, someone was expecting you to choose somewhere like this.";
+
+    document.getElementById('travelResult').classList.add('show');
+
+}
+
+
+/* ================= PHOTO ================= */
+
+function photoChoice(photo){
+
+    document.getElementById('photoResult').classList.add('show');
+
+}
+
+
+/* ================= DRAWER ================= */
+
+function openDrawer(){
+
+    openModal('drawerModal');
+
+}
+
+
+function unlockDrawer(){
+    const input =
+        document.getElementById('codeInput').value
+        .trim()
+        .toUpperCase();
+
+    if(input === 'LUM'){
+
+        document
+            .getElementById('drawerReveal')
+            .classList.add('show');
+
+        document
+            .getElementById('wrongCode')
+            .style.display = 'none';
+
+    }else{
+
+        document
+            .getElementById('wrongCode')
+            .style.display = 'block';
+
+    }
+
+}
+
+
+/* ================= ARSULUM ================= */
+
+function openArsulum(){
+
+    openModal('arsulumModal');
+
+}
+
+
+function arsulumAnswer(){
+
+    document
+        .getElementById('arsulumResult')
+        .classList.add('show');
+
+}
+
+
+/* ================= CLASSIFIED ================= */
+
+function openClassified(){
+
+    openModal('classifiedModal');
+
+}
+
+
+/* ================= ENDING ================= */
+
+function showEnding(){
+
+    closeModal('classifiedModal');
+
+    showScreen('ending');
+
+}
+
+
+/* ================= DAY 3 ================= */
+
+function goToDay3(){
+
+    /*
+      CHANGE THIS LINK ONLY IF YOUR DAY 3
+      HAS A DIFFERENT URL.
+
+      Currently this goes to your existing
+      JOE-bday site.
+    */
+
+    window.location.href =
+        "https://sansli2.github.io/JOE-bday/";
+
+}
+
+
+/* ================= ESC KEY ================= */
+
+document.addEventListener('keydown',function(e){
+
+    if(e.key === 'Escape'){
+
+        document
+            .querySelectorAll('.modal')
+            .forEach(modal=>{
+                modal.classList.remove('active');
+            });
+
+    }
+
+});
+
+</script>
+
 </body>
 </html>
