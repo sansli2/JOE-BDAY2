@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CASE 02 — The Things We Found</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Special+Elite&display=swap');
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#17120e;
+    color:#ead9b8;
+    font-family:'Cormorant Garamond',serif;
+    overflow-x:hidden;
+}
+
+/* OLD FILM GRAIN */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:999;
+    opacity:.07;
+    background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+button{
+    font-family:'Special Elite',cursive;
+}
+
+/* SCREENS */
+
+.screen{
+    min-height:100vh;
+    display:none;
+    padding:30px 20px;
+}
+
+.screen.active{
+    display:flex;
+}
+
+/* BUTTON */
+
+.main-btn{
+    margin-top:25px;
+    padding:14px 24px;
+    background:#2c2118;
+    color:#ead5aa;
+    border:1px solid #806744;
+    font-family:'Special Elite',cursive;
+    letter-spacing:2px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.main-btn:hover{
+    background:#59422c;
+    transform:translateY(-2px);
+}
+
+/* ==================================
+   MORNING AFTER
+================================== */
+
+#morning{
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+
+    background:
+    linear-gradient(rgba(20,14,9,.45),rgba(20,14,9,.85)),
+    url("images/day2-morning.jpg");
+
+    background-size:cover;
+    background-position:center;
+}
+
+.morning-box{
+    width:min(650px,94%);
+    padding:40px 25px;
+    background:rgba(30,22,16,.88);
+    border:1px solid #806744;
+    box-shadow:0 20px 70px #000;
+    animation:appear 1.2s ease;
+}
+
+.case{
+    font-family:'Special Elite',cursive;
+    letter-spacing:5px;
+    font-size:13px;
+    color:#b79a67;
+    margin-bottom:25px;
+}
+
+.morning-box h1{
+    font-size:clamp(38px,9vw,70px);
+    font-weight:500;
+    margin-bottom:25px;
+}
+
+.morning-box p{
+    font-size:20px;
+    line-height:1.6;
+    margin:7px 0;
+}
+
+/* ==================================
+   ARCHIVE
+================================== */
+
+#archive{
+    flex-direction:column;
+    align-items:center;
+    background:#201811;
+}
+
+.archive-title{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.archive-title h2{
+    font-size:42px;
+    font-weight:500;
+}
+
+.archive-title p{
+    font-size:18px;
+    color:#bca981;
+    margin-top:5px;
+}
+
+.evidence{
+    width:min(700px,95%);
+    padding:12px 18px;
+    background:#120e0a;
+    border:1px solid #604b32;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.evidence-label{
+    font-family:'Special Elite',cursive;
+    letter-spacing:2px;
+    font-size:12px;
+}
+
+.letters{
+    display:flex;
+    gap:8px;
+}
+
+.letter{
+    width:38px;
+    height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid #675137;
+    color:#75634a;
+    font-family:'Special Elite',cursive;
+}
+
+.letter.found{
+    background:#c7a873;
+    color:#24180e;
+    border-color:#dfc28b;
+    animation:stamp .5s ease;
+}
+
+.archive-image{
+    width:min(950px,100%);
+    box-shadow:0 20px 60px #000;
+}
+
+.archive-image img{
+    display:block;
+    width:100%;
+}
+
+/* ARCHIVE OBJECTS */
+
+.archive-buttons{
+    width:min(950px,100%);
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-top:18px;
+}
+
+.archive-object{
+    padding:16px;
+    border:1px solid #654e34;
+    background:#2b2118;
+    color:#d9c29b;
+    cursor:pointer;
+    letter-spacing:1px;
+    transition:.3s;
+}
+
+.archive-object:hover:not(:disabled){
+    background:#4d3824;
+    transform:translateY(-2px);
+}
+
+.archive-object:disabled{
+    opacity:.3;
+    cursor:not-allowed;
+}
+
+.archive-object.done{
+    border-color:#c5a66f;
+}
+/* ==================================
+   MODAL
+================================== */
+
+.modal{
+    position:fixed;
+    inset:0;
+    z-index:500;
+    background:rgba(5,4,3,.9);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    overflow-y:auto;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(760px,96%);
+    max-height:94vh;
+    overflow-y:auto;
+    background:#ead7b2;
+    color:#342519;
+    padding:25px;
+    box-shadow:0 20px 70px #000;
+    animation:appear .4s ease;
+}
+
+.modal-box img{
+    width:100%;
+    max-height:60vh;
+    object-fit:contain;
+    display:block;
+    margin-bottom:20px;
+}
+
+.modal-title{
+    text-align:center;
+    font-family:'Special Elite',cursive;
+    letter-spacing:2px;
+    margin-bottom:18px;
+}
+
+.modal-text{
+    text-align:center;
+    font-size:20px;
+    line-height:1.6;
+}
+
+.choices{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:20px;
+}
+
+.choice{
+    padding:14px;
+    background:#d6bd90;
+    color:#342519;
+    border:1px solid #92754b;
+    cursor:pointer;
+    font-family:'Special Elite',cursive;
+}
+
+.choice:hover{
+    background:#c4a474;
+}
+
+.result{
+    display:none;
+    margin-top:20px;
+    padding:18px;
+    background:#dfc89c;
+    border-left:3px solid #795b39;
+    font-size:18px;
+    line-height:1.5;
+}
+
+.result.show{
+    display:block;
+}
+
+.close-btn{
+    display:block;
+    margin:20px auto 0;
+    padding:12px 22px;
+    background:#38281b;
+    color:#ead5aa;
+    border:0;
+    cursor:pointer;
+    font-family:'Special Elite',cursive;
+}
+
+/* ==================================
+   RECEIPT
+================================== */
+
+.receipt{
+    width:min(400px,100%);
+    margin:22px auto;
+    padding:25px;
+    background:#f0dfb9;
+    border:1px dashed #80623d;
+    text-align:center;
+    font-family:'Special Elite',cursive;
+    box-shadow:5px 8px 18px rgba(0,0,0,.25);
+}
+
+.receipt img{
+    max-height:350px;
+}
+
+.receipt hr{
+    border:0;
+    border-top:1px dashed #80623d;
+    margin:15px 0;
+}
+
+.big-letter{
+    font-size:55px;
+    letter-spacing:8px;
+    margin:10px;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* ==================================
+   ARSULUM
+================================== */
+
+.big-word{
+    text-align:center;
+    font-family:'Special Elite',cursive;
+    font-size:clamp(40px,10vw,78px);
+    letter-spacing:7px;
+    margin:25px 0;
+}
+
+.combination{
+    text-align:center;
+}
+
+.combination p{
+    font-size:21px;
+    line-height:1.6;
+}
+
+/* ==================================
+   CLASSIFIED
+================================== */
+
+.classified{
+    padding:25px;
+    background:#d8c096;
+    border:2px solid #60482e;
+    font-family:'Special Elite',cursive;
+    line-height:1.8;
+}
+
+.redacted{
+    background:#302116;
+    color:#302116;
+    padding:0 15px;
+}
+
+/* ==================================
+   END
+================================== */
+
+#ending{
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background:#090706;
+}
+
+.end-box{
+    width:min(700px,92%);
+}
+
+.end-box h1{
+    font-family:'Special Elite',cursive;
+    font-size:clamp(50px,12vw,100px);
+    letter-spacing:8px;
+    margin:25px 0;
+    animation:flicker 3s infinite;
+}
+
+.end-box p{
+    font-size:21px;
+    line-height:1.6;
+    color:#c0ad8b;
+}
+
+/* ANIMATIONS */
+
+@keyframes appear{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes stamp{
+    from{
+        transform:scale(1.5) rotate(-8deg);
+    }
+    to{
+        transform:scale(1) rotate(0);
+    }
+}
+
+@keyframes flicker{
+    0%,18%,22%,63%,65%,100%{opacity:1}
+    20%,64%{opacity:.35}
+}
+
+@media(max-width:600px){
+
+    .archive-buttons{
+        grid-template-columns:1fr;
+    }
+
+    .choices{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ==================================================
+     DAY 2 — MORNING AFTER
+================================================== -->
+
+<section id="morning" class="screen active">
+
+    <div class="morning-box">
+<div class="case">
+            CASE 02
+        </div>
+
+        <h1>The Morning After</h1>
+
+        <p>
+            You shouldn't have opened it.
+        </p>
+
+        <p>
+            But since you did...
+        </p>
+
+        <br>
+
+        <p>
+            <strong>Start with yourself.</strong>
+        </p>
+
+        <br>
+
+        <p class="case">
+            SUBJECT: JOE
+        </p>
+
+        <p>
+            We spent the night looking through the records.
+        </p>
+
+        <p>
+            We found some things.
+        </p>
+
+        <p>
+            Some are ordinary.
+        </p>
+
+        <p>
+            Some are... very Joe.
+        </p>
+
+        <br>
+
+        <p>
+            And one thing doesn't belong there.
+        </p>
+
+        <button class="main-btn"
+                onclick="enterArchive()">
+
+            ENTER THE ARCHIVE
+
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     ARCHIVE ROOM
+================================================== -->
+
+<section id="archive" class="screen">
+
+    <div class="archive-title">
+
+        <div class="case">
+            CASE 02 — PERSONAL ARCHIVE
+        </div>
+
+        <h2>THE ARCHIVE</h2>
+
+        <p>
+            Explore the records.
+        </p>
+
+        <p>
+            Something is hidden here.
+        </p>
+
+    </div>
+
+
+    <!-- EVIDENCE -->
+
+    <div class="evidence">
+
+        <div class="evidence-label">
+            EVIDENCE RECOVERED
+        </div>
+
+        <div class="letters">
+
+            <div id="letterL" class="letter">
+                ?
+            </div>
+
+            <div id="letterU" class="letter">
+                ?
+            </div>
+
+            <div id="letterM" class="letter">
+                ?
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ARCHIVE IMAGE -->
+
+    <div class="archive-image">
+
+        <img src="images/archive-room.jpg"
+             alt="Vintage archive room">
+
+    </div>
+
+
+    <!-- OBJECTS -->
+
+    <div class="archive-buttons">
+
+        <button id="menuBtn"
+                class="archive-object"
+                onclick="openMenu()">
+
+            🍽 ARCHIVE CAFÉ
+
+        </button>
+
+
+        <button id="travelBtn"
+                class="archive-object"
+                onclick="openTravel()"
+                disabled>
+
+            ✈ TRAVEL BUREAU
+
+        </button>
+
+
+        <button id="photoBtn"
+                class="archive-object"
+                onclick="openPhoto()"
+                disabled>
+
+            📷 PHOTO ARCHIVE
+
+        </button>
+
+
+        <button id="admireBtn"
+                class="archive-object"
+                onclick="openAdmire()"
+                disabled>
+
+            ✉ ONE THING WE FOUND
+
+        </button>
+
+
+        <button id="drawerBtn"
+                class="archive-object"
+                onclick="openDrawer()"
+                disabled>
+
+            🔐 LOCKED DRAWER
+
+        </button>
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     CAFÉ
+================================================== -->
+
+<div id="menuModal" class="modal">
+
+<div class="modal-box">
+
+    <h2 class="modal-title">
+        THE ARCHIVE CAFÉ
+    </h2>
+
+
+    <img src="images/menu.jpg"
+         alt="Joe's Guest menu">
+
+
+    <div class="modal-text">
+
+        You arrive at this café, traveling the world so much,
+        not eating "Habesha" food for so many days.
+
+        <br><br>
+
+        <strong>
+            What will you choose?
+        </strong>
+
+    </div>
+
+
+    <div class="choices">
+
+        <button class="choice"
+                onclick="chooseFood('Kitfo')">
+
+            KITFO
+
+        </button>
+
+
+        <button class="choice"
+                onclick="chooseFood('Ribeye Steak')">
+
+            RIBEYE STEAK
+
+        </button>
+
+
+        <button class="choice"
+                onclick="chooseFood('Chicken Burger')">
+
+            CHICKEN BURGER
+
+        </button>
+
+
+        <button class="choice"
+                onclick="chooseFood('Grilled Fish')">
+
+            GRILLED FISH
+
+        </button>
+
+    </div>
+<div id="foodResult"
+         class="result">
+    </div>
+
+
+    <div id="receipt"
+         class="receipt hidden">
+
+        <img src="images/receipt.jpg"
+             alt="Archive cafe receipt">
+
+        <hr>
+
+        <div>
+            ARCHIVE CODE
+        </div>
+
+        <div class="big-letter">
+            L
+        </div>
+
+        <hr>
+
+        KEEP THIS.
+        <br>
+        YOU'LL NEED IT LATER.
+
+    </div>
+
+
+    <button id="menuClose"
+            class="close-btn hidden"
+            onclick="finishMenu()">
+
+        CONTINUE →
+
+    </button>
+
+</div>
+</div>
+
+
+
+<!-- ==================================================
+     TRAVEL BUREAU
+================================================== -->
+
+<div id="travelModal" class="modal">
+
+<div class="modal-box">
+
+    <h2 class="modal-title">
+        TRAVEL BUREAU
+    </h2>
+
+
+    <img src="images/travel-bureau.jpg"
+         alt="Vintage travel bureau">
+
+
+    <div class="modal-text">
+
+        The archive wants to know where
+        you would go next.
+
+        <br><br>
+
+        Choose carefully.
+
+    </div>
+
+
+    <div class="choices">
+
+        <button class="choice"
+                onclick="chooseTravel('Paris')">
+
+            PARIS
+
+        </button>
+
+
+        <button class="choice"
+                onclick="chooseTravel('Japan')">
+
+            JAPAN
+
+        </button>
+
+
+        <button class="choice"
+                onclick="chooseTravel('Italy')">
+
+            ITALY
+
+        </button>
+
+
+        <button class="choice"
+                onclick="chooseTravel('Anywhere with good food')">
+
+            SOMEWHERE WITH GOOD FOOD
+
+        </button>
+
+    </div>
+
+
+    <div id="travelResult"
+         class="result">
+    </div>
+
+
+    <div id="travelCode"
+         class="receipt hidden">
+
+        <div>
+            TRAVEL PROFILE UPDATED
+        </div>
+
+        <hr>
+
+        DESTINATION:
+        <br>
+
+        <strong id="travelChoice"></strong>
+
+        <hr>
+
+        CODE:
+
+        <div class="big-letter">
+            U
+        </div>
+
+    </div>
+
+
+    <button id="travelClose"
+            class="close-btn hidden"
+            onclick="finishTravel()">
+
+        NEXT FILE →
+
+    </button>
+
+</div>
+</div>
+
+
+
+<!-- ==================================================
+     PHOTO ARCHIVE
+================================================== -->
+
+<div id="photoModal" class="modal">
+
+<div class="modal-box">
+
+    <h2 class="modal-title">
+        PHOTO ARCHIVE
+    </h2>
+
+
+    <img src="images/photo-archive.jpg"
+         alt="Photo archive">
+
+
+    <div class="modal-text">
+
+        One photo is strange.
+
+        <br><br>
+
+        <strong>
+            Do you recognize the place?
+        </strong>
+
+    </div>
+
+
+    <div class="choices">
+
+        <button class="choice"
+                onclick="choosePhoto('A')">
+
+            PHOTO A
+
+        </button>
+
+
+        <button class="choice"
+                onclick="choosePhoto('B')">
+
+            PHOTO B
+
+        </button>
+
+
+        <button class="choice"
+                onclick="choosePhoto('C')">
+
+            PHOTO C
+
+        </button>
+
+
+        <button class="choice"
+                onclick="choosePhoto('D')">
+
+            PHOTO D
+
+        </button>
+
+    </div>
+
+
+    <div id="photoResult"
+         class="result">
+    </div>
+
+
+    <div id="photoCode"
+         class="receipt hidden">
+
+        <div>
+            PHOTO RECOVERED
+        </div>
+
+        <hr>
+
+        Something was written on the back.
+
+        <div class="big-letter">
+            M
+        </div>
+
+        ARCHIVE CODE CONFIRMED.
+
+    </div>
+
+
+    <button id="photoClose"
+            class="close-btn hidden"
+            onclick="finishPhoto()">
+
+        ONE LAST THING →
+
+    </button>
+
+</div>
+</div>
+
+
+
+<!-- ==================================================
+     ADMIRATION
+================================================== -->
+
+<div id="admireModal" class="modal">
+
+<div class="modal-box">
+
+    <h2 class="modal-title">
+        ONE THING THE ARCHIVE
+        CAN'T KEEP SECRET
+    </h2>
+
+
+    <img src="images/admire.jpg"
+         alt="Personal note">
+
+
+    <div class="modal-text">
+<p>
+            Okay… one thing the archive can't keep secret.
+        </p>
+
+        <br>
+
+        <p>
+            I genuinely admire you, Joe.
+            I admire the way you are completely yourself,
+            the way you can make ordinary moments more fun,
+            and the little things that make you <em>you</em>.
+        </p>
+
+        <br>
+
+        <p>
+            You’re honestly one of those people
+            I’m really glad I got to know.
+            And even if I don’t say it all the time,
+            I appreciate having you in my life
+            more than you probably realize.
+        </p>
+
+        <br>
+
+        <p>
+            So yeah… this is me admitting it. 😭
+            <br>
+            <strong>
+                I admire you. A lot.
+            </strong>
+        </p>
+
+        <br>
+
+        <p>
+            Now forget you ever saw this
+            before I get embarrassed.
+        </p>
+
+        <br>
+
+        <strong>
+            I LUVVVVV UUUU ❤️
+        </strong>
+
+    </div>
+
+
+    <button class="close-btn"
+            onclick="finishAdmire()">
+
+        OKAY I'M DONE 😭 →
+
+    </button>
+
+</div>
+</div>
+
+
+
+<!-- ==================================================
+     LOCKED DRAWER
+================================================== -->
+
+<div id="drawerModal" class="modal">
+
+<div class="modal-box">
+
+    <h2 class="modal-title">
+        EVIDENCE RECOVERED
+    </h2>
+
+
+    <div class="modal-text">
+
+        Three letters.
+
+        <br>
+
+        One locked drawer.
+
+        <br><br>
+
+        <strong>
+            You should know the code by now.
+        </strong>
+
+    </div>
+
+
+    <div class="receipt">
+
+        <div>
+            ARCHIVE LOCKED
+        </div>
+
+        <hr>
+
+        REQUIRED:
+
+        <div class="big-letter">
+            3 LETTERS
+        </div>
+
+        <hr>
+
+        ENTER CODE:
+
+        <input id="drawerInput"
+               maxlength="3"
+               autocomplete="off"
+               style="
+               display:block;
+               width:150px;
+               margin:15px auto;
+               padding:12px;
+               text-align:center;
+               font-size:25px;
+               letter-spacing:8px;
+               text-transform:uppercase;
+               background:#eee0bd;
+               border:1px solid #765a39;
+               ">
+
+        <button class="main-btn"
+                onclick="unlockDrawer()">
+
+            UNLOCK
+
+        </button>
+
+    </div>
+
+
+    <div id="drawerWrong"
+         class="result">
+
+        Nope. 😭
+
+        <br><br>
+
+        Think about the three letters
+        the archive gave you.
+
+    </div>
+
+
+    <div id="drawerOpen"
+         class="hidden">
+
+        <img src="images/locked-drawer.jpg"
+             alt="Locked drawer">
+
+
+        <div class="combination">
+
+            <p>
+                The letters were never random.
+            </p>
+
+            <div class="big-word">
+                ARSU
+            </div>
+
+            <p>
+                And then...
+            </p>
+
+            <div class="big-word">
+                LUM
+            </div>
+
+            <button class="main-btn"
+                    onclick="showArsulum()">
+
+                PUT THEM TOGETHER
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+
+
+<!-- ==================================================
+     ARSULUM
+================================================== -->
+
+<div id="arsulumModal" class="modal">
+
+<div class="modal-box combination">
+
+    <h2 class="modal-title">
+        EVIDENCE COMBINED
+    </h2>
+
+
+    <img src="images/arsulum.jpg"
+         alt="Arsulum">
+
+
+    <div class="big-word">
+        ARSU + LUM
+    </div>
+
+
+    <div class="big-word">
+        ARSULUM
+    </div>
+
+
+    <p>
+        You've seen this word before.
+    </p>
+
+    <p>
+        You just didn't know it was important.
+    </p>
+
+    <br>
+
+    <p>
+        Now you do.
+    </p>
+
+    <br>
+
+    <p>
+        But we still have one problem.
+    </p>
+
+    <br>
+
+    <strong style="font-size:24px;">
+        What is Arsulum?
+    </strong>
+
+
+    <div class="choices">
+<button class="choice"
+                onclick="arsulumAnswer()">
+
+            A PERSON
+
+        </button>
+
+
+        <button class="choice"
+                onclick="arsulumAnswer()">
+
+            A PLACE
+
+        </button>
+
+
+        <button class="choice"
+                onclick="arsulumAnswer()">
+
+            A CODE
+
+        </button>
+
+
+        <button class="choice"
+                onclick="arsulumAnswer()">
+
+            SOMETHING ELSE
+
+        </button>
+
+    </div>
+
+
+    <div id="arsulumResult"
+         class="result">
+    </div>
+
+
+    <button id="classifiedBtn"
+            class="close-btn hidden"
+            onclick="showClassified()">
+
+        THERE'S ONE MORE FILE →
+
+    </button>
+
+</div>
+</div>
+
+
+
+<!-- ==================================================
+     CLASSIFIED FILE
+================================================== -->
+
+<div id="classifiedModal" class="modal">
+
+<div class="modal-box">
+
+    <h2 class="modal-title">
+        CLASSIFIED FILE
+    </h2>
+
+
+    <img src="images/classified-file.jpg"
+         alt="Classified Arsulum file">
+
+
+    <div class="classified">
+
+        <strong>
+            ARSULUM
+        </strong>
+
+        <br><br>
+
+        CLASSIFICATION:
+        UNKNOWN
+
+        <br><br>
+
+        LOCATION:
+        <span class="redacted">
+            REDACTED
+        </span>
+
+        <br><br>
+
+        CONNECTION TO SUBJECT:
+        CONFIRMED
+
+        <br><br>
+
+        ACCESS:
+        RESTRICTED
+
+        <br><br>
+
+        FURTHER INFORMATION:
+        UNAVAILABLE
+
+    </div>
+
+
+    <div class="modal-text"
+         style="margin-top:25px;">
+
+        Someone deliberately hid this from you.
+
+        <br><br>
+
+        <em>
+            "She'll understand when she's ready."
+        </em>
+
+    </div>
+
+
+    <button class="close-btn"
+            onclick="showEnding()">
+
+        CLOSE THE FILE
+
+    </button>
+
+</div>
+</div>
+
+
+
+<!-- ==================================================
+     ENDING
+================================================== -->
+
+<section id="ending" class="screen">
+
+<div class="end-box">
+
+    <div class="case">
+        CASE 02 — CLOSED
+    </div>
+
+
+    <h1>
+        ARSULUM
+    </h1>
+
+
+    <p>
+        You came looking for something fun.
+    </p>
+
+    <p>
+        Instead, you found a name.
+    </p>
+
+    <br>
+
+    <p>
+        <strong>
+            Don't forget it.
+        </strong>
+    </p>
+
+    <br>
+
+    <p>
+        Tomorrow, we investigate.
+    </p>
+
+
+    <button class="main-btn"
+            onclick="goToDay3()">
+
+        DAY 3 — THE ARSULUM FILE
+
+    </button>
+
+</div>
+
+</section>
+
+
+
+<script>
+
+/* ==========================================
+   SCREEN
+========================================== */
+
+function showScreen(id){
+
+    document.querySelectorAll('.screen')
+    .forEach(screen=>{
+        screen.classList.remove('active');
+    });
+
+    document.getElementById(id)
+    .classList.add('active');
+
+    window.scrollTo(0,0);
+}
+
+
+function openModal(id){
+
+    document.getElementById(id)
+    .classList.add('show');
+
+}
+
+
+function closeModal(id){
+
+    document.getElementById(id)
+    .classList.remove('show');
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+function enterArchive(){
+
+    showScreen('archive');
+
+}
+
+
+/* ==========================================
+   EVIDENCE
+========================================== */
+
+function revealLetter(letter){
+
+    let element =
+        document.getElementById(
+            'letter' + letter
+        );
+
+    element.textContent = letter;
+
+    element.classList.add('found');
+
+}
+
+
+/* ==========================================
+   CAFÉ
+========================================== */
+
+function openMenu(){
+
+    openModal('menuModal');
+
+}
+
+
+function chooseFood(food){
+
+    document.getElementById('foodResult')
+    .innerHTML = 
+
+        <strong>
+            ORDER RECEIVED.
+        </strong>
+
+        <br><br>
+
+        Hmm...
+
+        <br><br>
+
+        That's exactly what we expected
+        you to choose.
+
+        <br><br>
+
+        <strong>
+            But wait. Your receipt is printing...
+        </strong>
+
+    ;
+document.getElementById('foodResult')
+    .classList.add('show');
+
+
+    setTimeout(()=>{
+
+        document.getElementById('receipt')
+        .classList.remove('hidden');
+
+        document.getElementById('menuClose')
+        .classList.remove('hidden');
+
+        revealLetter('L');
+
+    },900);
+
+}
+
+
+function finishMenu(){
+
+    closeModal('menuModal');
+
+    document.getElementById('menuBtn')
+    .classList.add('done');
+
+    document.getElementById('travelBtn')
+    .disabled=false;
+
+}
+
+
+/* ==========================================
+   TRAVEL
+========================================== */
+
+function openTravel(){
+
+    openModal('travelModal');
+
+}
+
+
+function chooseTravel(place){
+
+    document.getElementById('travelChoice')
+    .textContent = place;
+
+
+    document.getElementById('travelResult')
+    .innerHTML = 
+
+        <strong>
+            TRAVEL PROFILE UPDATED.
+        </strong>
+
+        <br><br>
+
+        Interesting choice...
+
+        <br><br>
+
+        The archive has accepted it.
+
+    ;
+
+    document.getElementById('travelResult')
+    .classList.add('show');
+
+
+    setTimeout(()=>{
+
+        document.getElementById('travelCode')
+        .classList.remove('hidden');
+
+        document.getElementById('travelClose')
+        .classList.remove('hidden');
+
+        revealLetter('U');
+
+    },800);
+
+}
+
+
+function finishTravel(){
+
+    closeModal('travelModal');
+
+    document.getElementById('travelBtn')
+    .classList.add('done');
+
+    document.getElementById('photoBtn')
+    .disabled=false;
+
+}
+
+
+/* ==========================================
+   PHOTO
+========================================== */
+
+function openPhoto(){
+
+    openModal('photoModal');
+
+}
+
+
+function choosePhoto(choice){
+
+    document.getElementById('photoResult')
+    .innerHTML = 
+
+        <strong>
+            PHOTO ANALYSIS COMPLETE.
+        </strong>
+
+        <br><br>
+
+        Hmm...
+
+        <br><br>
+
+        That one doesn't belong.
+
+        <br><br>
+
+        Turn it over.
+
+    ;
+
+    document.getElementById('photoResult')
+    .classList.add('show');
+
+
+    setTimeout(()=>{
+
+        document.getElementById('photoCode')
+        .classList.remove('hidden');
+
+        document.getElementById('photoClose')
+        .classList.remove('hidden');
+
+        revealLetter('M');
+
+    },700);
+
+}
+
+
+function finishPhoto(){
+
+    closeModal('photoModal');
+
+    document.getElementById('photoBtn')
+    .classList.add('done');
+
+    document.getElementById('admireBtn')
+    .disabled=false;
+
+}
+
+
+/* ==========================================
+   ADMIRATION
+========================================== */
+
+function openAdmire(){
+
+    openModal('admireModal');
+
+}
+
+
+function finishAdmire(){
+
+    closeModal('admireModal');
+
+    document.getElementById('admireBtn')
+    .classList.add('done');
+
+    document.getElementById('drawerBtn')
+    .disabled=false;
+
+}
+
+
+/* ==========================================
+   DRAWER
+========================================== */
+
+function openDrawer(){
+
+    openModal('drawerModal');
+
+}
+
+
+function unlockDrawer(){
+
+    let code =
+        document.getElementById('drawerInput')
+        .value
+        .trim()
+        .toUpperCase();
+
+
+    if(code === 'LUM'){
+
+        document.getElementById('drawerWrong')
+        .classList.remove('show');
+
+        document.getElementById('drawerOpen')
+        .classList.remove('hidden');
+
+    }
+
+    else{
+
+        document.getElementById('drawerWrong')
+        .classList.add('show');
+
+    }
+
+}
+
+
+/* ==========================================
+   ARSULUM
+========================================== */
+
+function showArsulum(){
+
+    closeModal('drawerModal');
+
+    openModal('arsulumModal');
+
+}
+
+
+function arsulumAnswer(){
+
+    document.getElementById('arsulumResult')
+    .innerHTML = 
+
+        <strong>
+            Could be.
+        </strong>
+
+        <br><br>
+
+        We don't have enough information.
+
+        <br><br>
+
+        The archive isn't telling us.
+
+    ;
+
+    document.getElementById('arsulumResult')
+    .classList.add('show');
+
+
+    document.getElementById('classifiedBtn')
+    .classList.remove('hidden');
+
+}
+/* ==========================================
+   CLASSIFIED
+========================================== */
+
+function showClassified(){
+
+    closeModal('arsulumModal');
+
+    openModal('classifiedModal');
+
+}
+
+
+/* ==========================================
+   END
+========================================== */
+
+function showEnding(){
+
+    closeModal('classifiedModal');
+
+    showScreen('ending');
+
+}
+
+
+/* ==========================================
+   DAY 3
+========================================== */
+
+function goToDay3(){
+
+    /*
+       CHANGE THIS LINK LATER
+       TO YOUR REAL DAY 3 URL.
+    */
+
+    window.location.href =
+    "https://sansli2.github.io/JOE-bday/";
+
+}
+
+</script>
+
+</body>
+</html>
